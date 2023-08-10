@@ -74,7 +74,7 @@ python data_pipeline.py
 
 ```
 
-### Via GitHub Actions
+### Via GitHub Actions 
 
 Make sure your repo’s Settings → Secrets include:
 

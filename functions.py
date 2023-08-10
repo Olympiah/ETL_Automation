@@ -26,7 +26,7 @@ def getVideoRecords(response: requests.models.Response) -> list:
       data = response.json()
 
     except ValueError:
-        print("⚠️ Response is not valid JSON:", response.text)
+        print("⚠️ Response is not a valid JSON:", response.text)
         return video_record_list
 
     if "items" not in data:
@@ -119,10 +119,6 @@ def getVideoTranscripts():
 
 
     df = pl.read_parquet('data/video-ids.parquet') 
-
-    #For debugging
-    # if df.is_empty():
-    #     print(" No videodata found, skipping transform step.")
 
 
     transcript_text_list = []
