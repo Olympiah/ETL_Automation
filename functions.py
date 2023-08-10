@@ -59,8 +59,8 @@ def getVideoID():
 
 
     playlist_id = os.getenv("PLAYLIST_ID")# my YouTube playlist ID
-    # page_token = None # initialize page token
-    page_token = " "# initialize page token
+    page_token = None # initialize page token
+    # page_token = " "# initialize page token
 
     url = 'https://www.googleapis.com/youtube/v3/playlistItems' # Access playlist items (endpoint)
     # testurl = https://www.googleapis.com/youtube/v3/channels?part=statistics&id=''-QPj48_A&key=''
@@ -70,8 +70,8 @@ def getVideoID():
     # extract video data across multiple search result pages
     video_record_list = []
 
-    # while page_token != 0:
-    while page_token != None:
+    while page_token != 0:
+    # while page_token != None:
         
         params = {
             "key": my_key, 
