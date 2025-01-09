@@ -60,7 +60,6 @@ def getVideoID():
 
     playlist_id = os.getenv("PLAYLIST_ID")# my YouTube playlist ID
     page_token = None # initialize page token
-    # url = 'https://www.googleapis.com/youtube/v3/search'  
     url = 'https://www.googleapis.com/youtube/v3/playlistItems' # Access playlist items (endpoint)
     # testurl = https://www.googleapis.com/youtube/v3/channels?part=statistics&id=''-QPj48_A&key=''
 
@@ -69,18 +68,14 @@ def getVideoID():
     # extract video data across multiple search result pages
     video_record_list = []
 
-    while True:
+    while page_token != 0:
         params = {
             "key": my_key, 
             'playlistId': playlist_id, 
             'part': ["snippet","contentDetails"], 
             'maxResults':25, 
-            # 'pageToken': page_token
+            'pageToken': page_token
         }
-
-        if page_token:
-            params["pageToken"] = page_token
-
         response = requests.get(url, params=params)
 
         # append video records to list
@@ -91,7 +86,7 @@ def getVideoID():
             page_token = json.loads(response.text)['nextPageToken']
         except:
             # if no next page token kill while loop
-            break
+            page_token = 0
 
     # write videos ids as parquet file
     pl.DataFrame(video_record_list).write_parquet('data/video-ids.parquet')
