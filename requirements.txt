@@ -2,3 +2,4 @@ requests
 polars
 youtube_transcript_api
 langchain_google_genai
+python-dotenv
