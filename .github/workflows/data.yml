@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   schedule:
     -cron:
-      -'* 15 27 8 5'
+      -'* 15 25 8 5'
 
 jobs:
   pipeline_data:
