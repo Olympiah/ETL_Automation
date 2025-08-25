@@ -35,10 +35,8 @@ def getVideoRecords(response: requests.models.Response) -> list:
     
     for raw_item in json.loads(response.text)['items']:
     
-        # only execute for youtube if its a plylistItem
-        # if raw_item['id']['kind'] != "youtube#playlistItem":
-            # continue
-        
+        # Note: playlistItems only returns videos
+           
         video_record = {}
         video_record['video_id'] = raw_item['contentDetails']['videoId'] #The ID that YouTube uses to uniquely identify a video
         video_record['datetime'] = raw_item['snippet']['publishedAt'] #The date and time that the item was added to the playlist.
@@ -111,6 +109,11 @@ def getVideoTranscripts():
 
 
     df = pl.read_parquet('data/video-ids.parquet')
+
+    #For debugging
+    if df.is_empty():
+        print("⚠️ No video data found, skipping transform step.")
+
 
     transcript_text_list = []
 
