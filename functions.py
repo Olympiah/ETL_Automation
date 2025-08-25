@@ -69,14 +69,18 @@ def getVideoID():
     # extract video data across multiple search result pages
     video_record_list = []
 
-    while page_token != 0:
+    while True:
         params = {
             "key": my_key, 
             'playlistId': playlist_id, 
             'part': ["snippet","contentDetails"], 
             'maxResults':25, 
-            'pageToken': page_token
+            # 'pageToken': page_token
         }
+
+        if page_token:
+            params["pageToken"] = page_token
+
         response = requests.get(url, params=params)
 
         # append video records to list
@@ -87,7 +91,7 @@ def getVideoID():
             page_token = json.loads(response.text)['nextPageToken']
         except:
             # if no next page token kill while loop
-            page_token = 0
+            break
 
     # write videos ids as parquet file
     pl.DataFrame(video_record_list).write_parquet('data/video-ids.parquet')
