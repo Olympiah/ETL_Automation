@@ -4,8 +4,7 @@ on:
   push:
   workflow_dispatch:
   schedule:
-    -cron:
-      -'* 15 25 8 5'
+    - cron: '33 15 25 8 5'
 
 jobs:
   pipeline_data:
