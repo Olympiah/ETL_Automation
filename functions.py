@@ -40,7 +40,7 @@ def getVideoRecords(response: requests.models.Response) -> list:
         video_record = {}
         video_record['video_id'] = raw_item['contentDetails']['videoId'] #The ID that YouTube uses to uniquely identify a video
         video_record['datetime'] = raw_item['snippet']['publishedAt'] #The date and time that the item was added to the playlist.
-        video_record['title'] = raw_item['snippet']['title'] # The item's title
+        video_record['title'] = raw_item['snippet']['title'] #The item's title
         video_record['description'] = raw_item['snippet']['description'] # The item's description.
 
         
@@ -70,7 +70,13 @@ def getVideoID():
     video_record_list = []
 
     while page_token != 0:
-        params = {"key": my_key, 'playlistId': playlist_id, 'part': ["snippet","contentDetails"], 'maxResults':25, 'pageToken': page_token}
+        params = {
+            "key": my_key, 
+            'playlistId': playlist_id, 
+            'part': ["snippet","contentDetails"], 
+            'maxResults':25, 
+            'pageToken': page_token
+        }
         response = requests.get(url, params=params)
 
         # append video records to list
@@ -111,8 +117,8 @@ def getVideoTranscripts():
     df = pl.read_parquet('data/video-ids.parquet')
 
     #For debugging
-    if df.is_empty():
-        print("⚠️ No video data found, skipping transform step.")
+    # if df.is_empty():
+    #     print(" No video data found, skipping transform step.")
 
 
     transcript_text_list = []
@@ -144,8 +150,8 @@ def handleSpecialStrings(df: pl.dataframe.frame.DataFrame) -> pl.dataframe.frame
             - transformData()
     """
 
-    special_strings = ['&#39;', '&amp;', 'sha ']
-    special_string_replacements = ["'", "&", "Shaw "]
+    special_strings = ['&#39;', '&amp;'] #apostrophe, ampersand
+    special_string_replacements = ["'", "&"]
 
     for i in range(len(special_strings)):
         df = df.with_columns(df['title'].str.replace(special_strings[i], special_string_replacements[i]).alias('title'))
@@ -177,6 +183,9 @@ def transformData():
     """
 
     df = pl.read_parquet('data/video-transcripts.parquet')
+
+    if df.is_empty():
+        print(" No video data found, skipping transform step.")
 
     df = handleSpecialStrings(df)
     df = setDatatypes(df)
