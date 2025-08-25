@@ -18,19 +18,33 @@ def getVideoRecords(response: requests.models.Response) -> list:
         Dependencies: 
             - getVideoIDs()
     """
-
+    
     video_record_list = []
+
+    try:
+        data = response.json()
+
+    except ValueError:
+        print("⚠️ Response is not valid JSON:", response.text)
+        return video_record_list
+
+    if "items" not in data:
+        print("⚠️ Unexpected response structure:", data)
+        return video_record_list
+    
     
     for raw_item in json.loads(response.text)['items']:
     
-        # only execute for youtube videos
-        if raw_item['id']['kind'] != "youtube#video":
-            continue
+        # only execute for youtube if its a plylistItem
+        # if raw_item['id']['kind'] != "youtube#playlistItem":
+            # continue
         
         video_record = {}
-        video_record['video_id'] = raw_item['id']['videoId']
-        video_record['datetime'] = raw_item['snippet']['publishedAt']
-        video_record['title'] = raw_item['snippet']['title']
+        video_record['video_id'] = raw_item['contentDetails']['videoId'] #The ID that YouTube uses to uniquely identify a video
+        video_record['datetime'] = raw_item['snippet']['publishedAt'] #The date and time that the item was added to the playlist.
+        video_record['title'] = raw_item['snippet']['title'] # The item's title
+        video_record['description'] = raw_item['snippet']['description'] # The item's description.
+
         
         video_record_list.append(video_record)
 
