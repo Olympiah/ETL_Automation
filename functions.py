@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 # from sentence_transformers import SentenceTransformer
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 import os
+import numpy as np
 
 #loading dotenv
 load_dotenv()
@@ -217,6 +218,9 @@ def createTextEmbeddings():
         # generate embeddings
         # embedding_arr = model.encode(df[column_name].to_list())
         embedding_arr = model_emb.embed_documents(df[column_name].to_list())
+
+        # convert to numpy array for shape + dataframe
+        embedding_arr = np.array(embedding_arr)
 
         # store embeddings in a dataframe
         schema_dict = {column_name+'_embedding-'+str(i): float for i in range(embedding_arr.shape[1])}
