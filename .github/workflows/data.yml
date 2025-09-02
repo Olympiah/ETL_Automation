@@ -35,20 +35,20 @@ jobs:
         GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
       run: python data_pipeline.py
 
-    # - name: Check for changes
-    #   id: git-check
-    #   shell: bash
-    #   run: |
-    #       git config user.name 'github-actions'
-    #       git config user.email 'github-actions@github.com'
-    #       git add .
-    #       git diff --staged --quiet || echo "changes=true" >> $GITHUB_ENV 
+    - name: Check for changes
+      id: git-check
+      shell: bash
+      run: |
+          git config user.name 'github-actions'
+          git config user.email 'github-actions@github.com'
+          git add .
+          git diff --staged --quiet || echo "changes=true" >> $GITHUB_ENV 
 
-    # - name: Commit and push if changes
-    #   if: env.changes == 'true' # if changes made push new data to repo
-    #   run: |
-    #       git commit -m "updated video index"
-    #       git pull --rebase origin main
-    #       git push
+    - name: Commit and push if changes
+      if: env.changes == 'true' # if changes made push new data to repo
+      run: |
+          git commit -m "updated video index"
+          git pull --rebase origin main
+          git push
     
      
