@@ -15,6 +15,7 @@ The goal of this project is to:
 This project also served as a hands-on exploration of CI/CD automation, YAML workflow configuration, and integrating with external services.
 
 ### ⚙️ Tech Stack
+---
 
 - Python – core ETL logic (data_pipeline.py, functions.py)
 
