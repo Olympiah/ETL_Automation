@@ -13,7 +13,7 @@ load_dotenv()
 def getVideoRecords(response: requests.models.Response) -> list:
 
     """
-        Function to extract YouTube video data from GET request response
+        Function to extract YouTube videodata from GET request response
 
         Dependencies: 
             - getVideoIDs()
@@ -22,14 +22,14 @@ def getVideoRecords(response: requests.models.Response) -> list:
     video_record_list = []
 
     try:
-        data = response.json()
+    data = response.json()
 
     except ValueError:
         print("⚠️ Response is not valid JSON:", response.text)
         return video_record_list
 
-    if "items" not in data:
-        print("⚠️ Unexpected response structure:", data)
+    if "items" not indata:
+        print("⚠️ Unexpected response structure:",data)
         return video_record_list
     
     
@@ -67,7 +67,7 @@ def getVideoID():
 
     my_key = os.getenv('YT_API_KEY') #youtube_api
 
-    # extract video data across multiple search result pages
+    # extract videodata across multiple search result pages
     video_record_list = []
 
     while page_token != 0:
@@ -93,7 +93,7 @@ def getVideoID():
             page_token = 0
 
     # write videos ids as parquet file
-    pl.DataFrame(video_record_list).write_parquet('/data/video-ids.parquet') #\data
+    pl.DataFrame(video_record_list).write_parquet('data/video-ids.parquet') #data
 
 
 def extractTranscriptText(transcript: list) -> str:
@@ -110,18 +110,18 @@ def extractTranscriptText(transcript: list) -> str:
 
 def getVideoTranscripts():
     """
-        Function to extract transcripts for all video IDs stored in "/data/video-ids.parquet"
+        Function to extract transcripts for all video IDs stored in "data/video-ids.parquet"
 
         Dependencies:
             - extractTranscriptText()
     """
 
 
-    df = pl.read_parquet('/data/video-ids.parquet') 
+    df = pl.read_parquet('data/video-ids.parquet') 
 
     #For debugging
     # if df.is_empty():
-    #     print(" No video data found, skipping transform step.")
+    #     print(" No videodata found, skipping transform step.")
 
 
     transcript_text_list = []
@@ -141,8 +141,8 @@ def getVideoTranscripts():
     # add transcripts to dataframe
     df = df.with_columns(pl.Series(name="transcript", values=transcript_text_list))
 
-    # write dataframe to file (incase of dealing with big data better to store in remote storage eg S3 bcuket)
-    df.write_parquet('/data/video-transcripts.parquet')
+    # write dataframe to file (incase of dealing with bigdata better to store in remote storage eg S3 bcuket)
+    df.write_parquet('data/video-transcripts.parquet')
 
 
 def handleSpecialStrings(df: pl.dataframe.frame.DataFrame) -> pl.dataframe.frame.DataFrame:
@@ -164,7 +164,7 @@ def handleSpecialStrings(df: pl.dataframe.frame.DataFrame) -> pl.dataframe.frame
 
 def setDatatypes(df: pl.dataframe.frame.DataFrame) -> pl.dataframe.frame.DataFrame:
     """
-        Function to change data types of columns in polars data frame containing video IDs, dates, titles, and transcripts
+        Function to changedata types of columns in polarsdata frame containing video IDs, dates, titles, and transcripts
 
         Dependers:
             - transformData()
@@ -178,30 +178,30 @@ def setDatatypes(df: pl.dataframe.frame.DataFrame) -> pl.dataframe.frame.DataFra
 
 def transformData():
     """
-        Function to preprocess video data
+        Function to preprocess videodata
 
         Dependencies:
             - handleSpecialStrings()
             - setDatatypes()
     """
 
-    df = pl.read_parquet('/data/video-transcripts.parquet')
+    df = pl.read_parquet('data/video-transcripts.parquet')
 
     if df.is_empty():
-        print(" No video data found, skipping transform step.")
+        print(" No videodata found, skipping transform step.")
 
     df = handleSpecialStrings(df)
     df = setDatatypes(df)
 
-    df.write_parquet('/data/video-transcripts.parquet')
+    df.write_parquet('data/video-transcripts.parquet')
 
 def createTextEmbeddings():
     """
         Function to generate text embeddings of video titles and transcripts
     """
 
-    # read data from file
-    df = pl.read_parquet('/data/video-transcripts.parquet')
+    # readdata from file
+    df = pl.read_parquet('data/video-transcripts.parquet')
 
     # define embedding model and columns to embed
     model_emb = GoogleGenerativeAIEmbeddings(
@@ -225,5 +225,5 @@ def createTextEmbeddings():
         # append embeddings to video index
         df = pl.concat([df, df_embedding], how='horizontal')
 
-    # write data to file
-    df.write_parquet('/data/video-index.parquet')
+    # writedata to file
+    df.write_parquet('data/video-index.parquet')
