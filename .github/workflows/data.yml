@@ -32,6 +32,7 @@ jobs:
       env: 
         YT_API_KEY: ${{ secrets.YT_API_KEY}}
         PLAYLIST_ID: ${{ secrets.PLAYLIST_ID }} 
+        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
       run: python data_pipeline.py
 
     - name: Check for changes
