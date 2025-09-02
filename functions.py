@@ -22,13 +22,13 @@ def getVideoRecords(response: requests.models.Response) -> list:
     video_record_list = []
 
     try:
-    data = response.json()
+      data = response.json()
 
     except ValueError:
         print("⚠️ Response is not valid JSON:", response.text)
         return video_record_list
 
-    if "items" not indata:
+    if "items" not in data:
         print("⚠️ Unexpected response structure:",data)
         return video_record_list
     
